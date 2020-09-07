@@ -1,0 +1,26 @@
+{
+  "name": "airQuality",
+  "version": "1.0.0",
+  "description": "",
+  "main": "model.js",
+  "dependencies": {
+    "aqi-bot": "^1.1.4",
+    "axios": "^0.20.0",
+    "mongoose": "^5.10.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/longevitytina/Air-Quality-Alert.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/longevitytina/Air-Quality-Alert/issues"
+  },
+  "homepage": "https://github.com/longevitytina/Air-Quality-Alert#readme"
+}

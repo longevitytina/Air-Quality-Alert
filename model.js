@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const AqiDataSchema = new Schema({
-  currentAQI: String,
-  previousAQI: String,
-  sensorID: String,
+  currentAqi: Number,
+  previousAqi: Number,
+  sensorID: Number,
   phoneNumber: String,
 });
 

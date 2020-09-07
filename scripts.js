@@ -32,11 +32,24 @@ const DB_URI = "mongodb://localhost:27017/airQuality";
   );
   console.log(aqi);
 
-  //   aqibot.AQICalculator.getAQIResult("PM2.5", concentration)
-  //     .then((result) => {
-  //       console.log(result);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
+  // const myAqiData = [
+  //   {
+  //     currentAQI: aqi,
+  //     previousAQI: "TBD",
+  //     sensorID: "TBD",
+  //     phoneNumber: "TBD",
+  //   },
+  // ];
+  // AqiData.create(myAqiData, (err, newAqi) => {
+  //   if (err) {
+  //     console.log(err);
+  //     process.exit();
+  //   }
+  //   console.log("Made Aqi!", newAqi);
+  //   process.exit();
+  // });
+  AqiData.find((err, Aqis) => {
+    console.log(Aqis);
+    process.exit();
+  });
 })();

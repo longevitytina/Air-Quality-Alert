@@ -14,42 +14,40 @@ const DB_URI = "mongodb://localhost:27017/airQuality";
   });
 
   // monitor changes past a certain threshold
-
+  const sensorId = 4372;
   const { data } = await axios.get(
-    "https://www.purpleair.com/json?key=412TUD7OJINJU9ZL&show=4372"
+    `https://www.purpleair.com/json?key=412TUD7OJINJU9ZL&show=${sensorId}`
   );
   const concentration = data.results[0].pm2_5_atm;
-  // .then((response) => {
-  //   console.log(response.data.results[0].pm2_5_atm);
-  //   return response.data.results[0].pm2_5_atm;
-  // })
-  // .catch(function (error) {
-  //   console.log(error);
-  // });
   const { aqi } = await aqibot.AQICalculator.getAQIResult(
     "PM2.5",
     concentration
   );
   console.log(aqi);
 
-  // const myAqiData = [
-  //   {
-  //     currentAQI: aqi,
-  //     previousAQI: "TBD",
-  //     sensorID: "TBD",
-  //     phoneNumber: "TBD",
-  //   },
-  // ];
-  // AqiData.create(myAqiData, (err, newAqi) => {
-  //   if (err) {
-  //     console.log(err);
-  //     process.exit();
-  //   }
-  //   console.log("Made Aqi!", newAqi);
-  //   process.exit();
-  // });
-  AqiData.find((err, Aqis) => {
-    console.log(Aqis);
-    process.exit();
-  });
-})();
+  const aqiData = await AqiData.findOne({ sensorID: sensorId }).exec();
+  if (aqiData) {
+    aqiData.previousAqi = aqiData.currentAqi;
+    aqiData.currentAqi = aqi;
+    await aqiData.save();
+    console.log("updated");
+    if (aqiData.previousAqi <= 75 && aqiData.currentAqi > 75) {
+      console.log("CLOSE YOUR WINDOWS, QUICK!");
+    } else if (aqiData.previousAqi >= 75 && aqiData.currentAqi < 75) {
+      console.log(" FREEDOM, OPEN DEM WINDOWS!");
+    }
+  } else {
+    const myAqiData = [
+      {
+        currentAqi: aqi,
+        previousAqi: "TBD",
+        sensorID: sensorId,
+        phoneNumber: "TBD",
+      },
+    ];
+    await AqiData.create(myAqiData);
+    console.log("created");
+  }
+
+  console.log(aqiData);
+})().then(() => process.exit(0));

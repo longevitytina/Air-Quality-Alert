@@ -1,7 +1,20 @@
 const axios = require("axios");
-let aqibot = require("aqi-bot");
+const aqibot = require("aqi-bot");
+const mongoose = require("mongoose");
+const AqiData = require("./model");
+const DB_URI = "mongodb://localhost:27017/airQuality";
 
 (async function () {
+  // CONNECT TO MongoDB
+  await mongoose.connect(DB_URI, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+  });
+
+  // monitor changes past a certain threshold
+
   const { data } = await axios.get(
     "https://www.purpleair.com/json?key=412TUD7OJINJU9ZL&show=4372"
   );

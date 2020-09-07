@@ -2,11 +2,15 @@ const axios = require("axios");
 const aqibot = require("aqi-bot");
 const mongoose = require("mongoose");
 const AqiData = require("./model");
-const DB_URI = "mongodb://localhost:27017/airQuality";
+require("dotenv").config();
+const client = require("twilio")(
+  process.env.ACCOUNT_SID,
+  process.env.AUTH_TOKEN
+);
 
 (async function () {
   // CONNECT TO MongoDB
-  await mongoose.connect(DB_URI, {
+  await mongoose.connect(process.env.DB_URI, {
     useNewUrlParser: true,
     useFindAndModify: false,
     useCreateIndex: true,
@@ -26,23 +30,38 @@ const DB_URI = "mongodb://localhost:27017/airQuality";
   console.log(aqi);
 
   const aqiData = await AqiData.findOne({ sensorID: sensorId }).exec();
+
   if (aqiData) {
     aqiData.previousAqi = aqiData.currentAqi;
     aqiData.currentAqi = aqi;
     await aqiData.save();
     console.log("updated");
-    if (aqiData.previousAqi <= 75 && aqiData.currentAqi > 75) {
-      console.log("CLOSE YOUR WINDOWS, QUICK!");
-    } else if (aqiData.previousAqi >= 75 && aqiData.currentAqi < 75) {
-      console.log(" FREEDOM, OPEN DEM WINDOWS!");
+    const threshold = 119;
+    if (aqiData.previousAqi <= threshold && aqiData.currentAqi > threshold) {
+      const message = await client.messages.create({
+        body: `CLOSE YOUR WINDOWS, QUICK! THE AQI IS ${aqi}!!!`,
+        from: "+12056354950",
+        to: "+14155138407",
+      });
+      console.log(message);
+    } else if (
+      aqiData.previousAqi >= threshold &&
+      aqiData.currentAqi < threshold
+    ) {
+      const message = await client.messages.create({
+        body: "FREEDOM, OPEN DEM WINDOWS!",
+        from: "+12056354950",
+        to: "+14157792256",
+      });
+      console.log(message);
     }
   } else {
     const myAqiData = [
       {
         currentAqi: aqi,
-        previousAqi: "TBD",
+        previousAqi: 0,
         sensorID: sensorId,
-        phoneNumber: "TBD",
+        phoneNumber: "4157792256",
       },
     ];
     await AqiData.create(myAqiData);

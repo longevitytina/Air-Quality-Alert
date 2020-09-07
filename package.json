@@ -6,7 +6,10 @@
   "dependencies": {
     "aqi-bot": "^1.1.4",
     "axios": "^0.20.0",
-    "mongoose": "^5.10.3"
+    "dotenv": "^8.2.0",
+    "mocha": "^8.1.3",
+    "mongoose": "^5.10.3",
+    "twilio": "^3.49.1"
   },
   "devDependencies": {},
   "scripts": {
